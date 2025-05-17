@@ -40,7 +40,7 @@ export default function Sidebar({
   const renderBlock = (block) => (
     <div
       key={block.id}
-      className={`flex flex-wrap ${block.className} text-white px-2 py-1 my-2 text-sm items-center cursor-grab`}
+      className={`flex flex-wrap ${block.className} text-white px-3 py-2 my-2 text-sm items-center cursor-grab rounded-xl shadow-sm transition-all duration-150 hover:scale-[1.03]`}
       draggable
       onDragStart={(e) => {
         e.dataTransfer.setData("block", JSON.stringify(block));

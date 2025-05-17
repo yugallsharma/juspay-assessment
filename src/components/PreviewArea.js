@@ -40,7 +40,16 @@ function clampPosition(key, x, y) {
   };
 }
 
-export default function PreviewArea({ sprites, setSprites, activeSprite, setActiveSprite, spriteBlocks, setSpriteBlocks }) {
+export default function PreviewArea({
+  sprites,
+  setSprites,
+  activeSprite,
+  setActiveSprite,
+  spriteBlocks,
+  setSpriteBlocks,
+  heroSwapEnabled,
+  setHeroSwapEnabled,
+}) {
   const dragData = useRef({
     dragging: false,
     spriteKey: null,
@@ -54,10 +63,10 @@ export default function PreviewArea({ sprites, setSprites, activeSprite, setActi
     const key = e.target.value;
     if (key && !sprites[key]) {
       // Find the first unused default position
-      const used = Object.values(sprites).map(s => `${s.x},${s.y}`);
+      const used = Object.values(sprites).map((s) => `${s.x},${s.y}`);
       const pos =
-        defaultPositions.find(p => !used.includes(`${p.x},${p.y}`)) ||
-        { x: 200, y: 200 }; // fallback to center if all used
+        defaultPositions.find((p) => !used.includes(`${p.x},${p.y}`)) || // fallback to center if all used
+        { x: 200, y: 200 };
       setSprites((prev) => ({
         ...prev,
         [key]: { x: pos.x, y: pos.y, angle: 0 },
@@ -115,16 +124,17 @@ export default function PreviewArea({ sprites, setSprites, activeSprite, setActi
   // Remove sprite handler
   const removeActiveSprite = () => {
     if (!activeSprite) return;
-    setSprites(prev => {
+    setSprites((prev) => {
       const copy = { ...prev };
       delete copy[activeSprite];
       return copy;
     });
-    setSpriteBlocks && setSpriteBlocks(prev => {
-      const copy = { ...prev };
-      delete copy[activeSprite];
-      return copy;
-    });
+    setSpriteBlocks &&
+      setSpriteBlocks((prev) => {
+        const copy = { ...prev };
+        delete copy[activeSprite];
+        return copy;
+      });
     setActiveSprite(null);
   };
 
@@ -161,6 +171,7 @@ export default function PreviewArea({ sprites, setSprites, activeSprite, setActi
 
   return (
     <div className="w-full flex flex-col items-center justify-center p-4 bg-white">
+
       <div className="flex items-center mb-4">
         <select
           onChange={onSpriteSelect}
@@ -175,6 +186,17 @@ export default function PreviewArea({ sprites, setSprites, activeSprite, setActi
           <option value="frog">Frog</option>
           <option value="tortoise">Tortoise</option>
         </select>
+        {Object.keys(sprites).length > 1 && (
+          <label className="ml-4 flex items-center text-sm font-medium text-blue-700">
+            <input
+              type="checkbox"
+              checked={heroSwapEnabled}
+              onChange={(e) => setHeroSwapEnabled(e.target.checked)}
+              className="mr-2 accent-blue-500"
+            />
+            Hero Feature
+          </label>
+        )}
         {activeSprite && (
           <button
             onClick={removeActiveSprite}

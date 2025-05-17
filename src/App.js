@@ -20,34 +20,55 @@ export default function App() {
   const [spriteBlocks, setSpriteBlocks] = useState({});
   const [activeSprite, setActiveSprite] = useState(null);
   const [blocks, setBlocks] = useState(initialBlocks);
+  const [heroSwapEnabled, setHeroSwapEnabled] = useState(false);
 
   return (
-    <div className="bg-blue-100 pt-6 font-sans">
-      <div className="h-screen overflow-hidden flex flex-row">
-        <div className="flex-1 h-screen overflow-hidden flex flex-row bg-white border-t border-r border-gray-200 rounded-tr-xl mr-2">
-          <Sidebar
-            sprites={sprites}
-            activeSprite={activeSprite}
-            setActiveSprite={setActiveSprite}
-            blocks={blocks}
-            setBlocks={setBlocks}
-          />
-          <MidArea
-            sprites={sprites}
-            setSprites={setSprites}
-            spriteBlocks={spriteBlocks}
-            setSpriteBlocks={setSpriteBlocks}
-            activeSprite={activeSprite}
-            setActiveSprite={setActiveSprite}
-          />
-        </div>
-        <div className="w-1/3 mr-3 h-screen overflow-hidden flex flex-col bg-white border-t border-l border-gray-200 rounded-tl-xl ml-2">
-          <PreviewArea
-            sprites={sprites}
-            setSprites={setSprites}
-            setActiveSprite={setActiveSprite}
-            activeSprite={activeSprite}
-          />
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 font-sans">
+      <header className="w-full py-6 mb-4 shadow bg-white flex items-center justify-center">
+        <h1 className="text-3xl font-bold text-blue-600 tracking-tight">
+          Juspay Scratch Playground
+        </h1>
+      </header>
+      <div className="max-w-7xl mx-auto px-4 pb-8">
+        <div className="flex flex-row gap-6">
+          <div className="flex-1 flex flex-row gap-4">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 flex-none">
+              <Sidebar
+                sprites={sprites}
+                activeSprite={activeSprite}
+                setActiveSprite={setActiveSprite}
+                blocks={blocks}
+                setBlocks={setBlocks}
+              />
+            </div>
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 flex-1 flex flex-col">
+              <MidArea
+                sprites={sprites}
+                setSprites={setSprites}
+                spriteBlocks={spriteBlocks}
+                setSpriteBlocks={setSpriteBlocks}
+                activeSprite={activeSprite}
+                setActiveSprite={setActiveSprite}
+                blocks={blocks}
+                setBlocks={setBlocks}
+                heroSwapEnabled={heroSwapEnabled}
+              />
+            </div>
+          </div>
+          <div className="w-[440px]">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200">
+              <PreviewArea
+                sprites={sprites}
+                setSprites={setSprites}
+                setActiveSprite={setActiveSprite}
+                activeSprite={activeSprite}
+                spriteBlocks={spriteBlocks}
+                setSpriteBlocks={setSpriteBlocks}
+                heroSwapEnabled={heroSwapEnabled}
+                setHeroSwapEnabled={setHeroSwapEnabled}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
