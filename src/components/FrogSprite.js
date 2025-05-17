@@ -12,28 +12,32 @@ export default function FrogSprite({ x = 0, y = 0, angle = 0 }) {
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="95"
-        height="75"
-        viewBox="0 0 95 75"
+        width="90"
+        height="70"
+        viewBox="0 0 90 70"
         fill="none"
-        stroke="#004d00"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
       >
+        {/* Back legs */}
+        <ellipse cx="18" cy="62" rx="8" ry="4" fill="#388e3c" />
+        <ellipse cx="72" cy="62" rx="8" ry="4" fill="#388e3c" />
         {/* Body */}
-        <ellipse cx="47.5" cy="50" rx="40" ry="25" fill="#4CAF50" />
-        {/* Head with eyes */}
-        <circle cx="32" cy="30" r="18" fill="#66BB6A" />
-        <circle cx="62" cy="30" r="18" fill="#66BB6A" />
-        {/* Eye pupils */}
-        <circle cx="27" cy="27" r="6" fill="#000" />
-        <circle cx="67" cy="27" r="6" fill="#000" />
-        {/* Mouth */}
-        <path d="M30 45 Q47.5 60 65 45" stroke="#2e7d32" strokeWidth="3" fill="none" strokeLinecap="round" />
-        {/* Legs */}
-        <path d="M15 65 Q10 70 15 75" stroke="#2e7d32" strokeWidth="4" fill="none" />
-        <path d="M80 65 Q85 70 80 75" stroke="#2e7d32" strokeWidth="4" fill="none" />
+        <ellipse cx="45" cy="45" rx="28" ry="18" fill="#4CAF50" />
+        {/* Front legs */}
+        <ellipse cx="28" cy="60" rx="5" ry="2.5" fill="#43a047" />
+        <ellipse cx="62" cy="60" rx="5" ry="2.5" fill="#43a047" />
+        {/* Head */}
+        <ellipse cx="45" cy="28" rx="18" ry="14" fill="#66BB6A" />
+        {/* Eyes */}
+        <ellipse cx="34" cy="18" rx="6" ry="6" fill="#fff" stroke="#388e3c" strokeWidth="1.2" />
+        <ellipse cx="56" cy="18" rx="6" ry="6" fill="#fff" stroke="#388e3c" strokeWidth="1.2" />
+        {/* Pupils */}
+        <ellipse cx="34" cy="19" rx="2" ry="3" fill="#222" />
+        <ellipse cx="56" cy="19" rx="2" ry="3" fill="#222" />
+        {/* Smile */}
+        <path d="M38 32 Q45 38 52 32" stroke="#222" strokeWidth="2" fill="none" />
+        {/* Nostrils */}
+        <ellipse cx="41" cy="26" rx="1" ry="0.7" fill="#222" />
+        <ellipse cx="49" cy="26" rx="1" ry="0.7" fill="#222" />
       </svg>
     </div>
   );

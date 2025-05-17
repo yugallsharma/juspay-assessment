@@ -171,21 +171,39 @@ export default function PreviewArea({
 
   return (
     <div className="w-full flex flex-col items-center justify-center p-4 bg-white">
-
       <div className="flex items-center mb-4">
-        <select
-          onChange={onSpriteSelect}
-          defaultValue=""
-          className="p-2 rounded border border-gray-400"
-        >
-          <option value="" disabled>
-            Select a sprite to add
-          </option>
-          <option value="cat">Cat</option>
-          <option value="dog">Dog</option>
-          <option value="frog">Frog</option>
-          <option value="tortoise">Tortoise</option>
-        </select>
+        <div className="relative">
+          <select
+            onChange={onSpriteSelect}
+            defaultValue=""
+            className="p-2 pr-8 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 bg-white text-gray-700 transition appearance-none"
+            style={{ minWidth: 170 }}
+          >
+            <option value="" disabled>
+              ➕ Add a sprite...
+            </option>
+            <option value="cat">🐱 Cat</option>
+            <option value="dog">🐶 Dog</option>
+            <option value="frog">🐸 Frog</option>
+            <option value="tortoise">🐢 Tortoise</option>
+          </select>
+          {/* Custom dropdown arrow */}
+          <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+            <svg
+              className="w-4 h-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
         {Object.keys(sprites).length > 1 && (
           <label className="ml-4 flex items-center text-sm font-medium text-blue-700">
             <input

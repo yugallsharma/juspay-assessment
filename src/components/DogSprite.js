@@ -12,31 +12,34 @@ export default function DogSprite({ x = 0, y = 0, angle = 0 }) {
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="95"
-        height="100"
-        viewBox="0 0 95 100"
+        width="90"
+        height="90"
+        viewBox="0 0 90 90"
         fill="none"
-        stroke="#001026"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
       >
         {/* Body */}
-        <ellipse cx="47.5" cy="70" rx="35" ry="20" fill="#A0522D" stroke="#5A2D0C" strokeWidth="2"/>
+        <ellipse cx="45" cy="60" rx="28" ry="18" fill="#B8865B" />
         {/* Head */}
-        <circle cx="47.5" cy="40" r="25" fill="#D2691E" />
-        {/* Eyes */}
-        <circle cx="35" cy="35" r="6" fill="#FFF" />
-        <circle cx="60" cy="35" r="6" fill="#FFF" />
-        <circle cx="35" cy="35" r="3" fill="#000" />
-        <circle cx="60" cy="35" r="3" fill="#000" />
-        {/* Nose */}
-        <path d="M42 48 L53 48 L47.5 55 Z" fill="#4B2E0D" />
+        <ellipse cx="45" cy="38" rx="20" ry="18" fill="#D2A679" />
         {/* Ears */}
-        <path d="M20 15 Q30 5 38 22" fill="#8B4513" />
-        <path d="M75 15 Q65 5 57 22" fill="#8B4513" />
+        <ellipse cx="25" cy="28" rx="8" ry="16" fill="#8B5C2A" />
+        <ellipse cx="65" cy="28" rx="8" ry="16" fill="#8B5C2A" />
+        {/* Eyes */}
+        <ellipse cx="38" cy="38" rx="3" ry="4" fill="#fff" />
+        <ellipse cx="52" cy="38" rx="3" ry="4" fill="#fff" />
+        <ellipse cx="38" cy="39" rx="1.2" ry="2" fill="#222" />
+        <ellipse cx="52" cy="39" rx="1.2" ry="2" fill="#222" />
+        {/* Snout */}
+        <ellipse cx="45" cy="48" rx="7" ry="5" fill="#fff" />
+        {/* Nose */}
+        <ellipse cx="45" cy="50" rx="2" ry="1.5" fill="#222" />
+        {/* Mouth */}
+        <path d="M43 53 Q45 55 47 53" stroke="#222" strokeWidth="1.2" fill="none" />
         {/* Tail */}
-        <path d="M15 80 Q5 70 15 60" stroke="#5A2D0C" strokeWidth="3" fill="none" />
+        <path d="M20 70 Q10 65 18 60" stroke="#8B5C2A" strokeWidth="3" fill="none" />
+        {/* Legs */}
+        <ellipse cx="33" cy="78" rx="4" ry="7" fill="#D2A679" />
+        <ellipse cx="57" cy="78" rx="4" ry="7" fill="#D2A679" />
       </svg>
     </div>
   );
