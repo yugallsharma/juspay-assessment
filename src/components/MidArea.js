@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Icon from "./Icon";
 import { spriteSizes, clampPosition } from "../utils/clamp";
-
-// Helper: Remove a block by uid from a flat list and all repeat children
+ 
 function removeBlockByUid(blocks, uid) {
   return blocks
     .filter(b => b.uid !== uid)
@@ -22,7 +21,6 @@ function isDescendant(block, uid) {
   return false;
 }
 
-// Helper: Move a block within a list (for reordering)
 function moveBlockInList(list, fromIdx, toIdx) {
   const arr = [...list];
   const [moved] = arr.splice(fromIdx, 1);
@@ -30,7 +28,6 @@ function moveBlockInList(list, fromIdx, toIdx) {
   return arr;
 }
 
-// Interruptible delay
 function delay(ms, stopRef) {
   return new Promise(resolve => {
     const start = Date.now();
@@ -43,7 +40,6 @@ function delay(ms, stopRef) {
   });
 }
 
-// Render a block (flat list, only Repeat has children)
 function renderBlockContentWithInputs(
   block,
   onChange,
@@ -117,11 +113,9 @@ function renderBlockContentWithInputs(
               />
             );
           }
-          // Fallback:
           return <span key={i}>{part}</span>;
         })
       )}
-      {/* Only Repeat block has children */}
       {block.content[0] === "Repeat " && (
         <div
           className="ml-6 mt-1 border-l-2 border-yellow-400 pl-2 bg-yellow-100/20 rounded"
@@ -136,7 +130,6 @@ function renderBlockContentWithInputs(
             const blockData = e.dataTransfer.getData("block");
             if (blockData) {
               const droppedBlock = JSON.parse(blockData);
-              // Prevent dropping a block into itself or its descendants
               if (droppedBlock.uid === block.uid || isDescendant(droppedBlock, block.uid)) {
                 setDragOverChildIdx(null);
                 return;
@@ -245,7 +238,6 @@ function renderBlockContentWithInputs(
               </button>
             </div>
           ))}
-          {/* End drop zone for reordering */}
           <div
             onDragOver={e => {
               e.preventDefault();
@@ -306,14 +298,12 @@ export default function MidArea({
   const runTokenRef = useRef({});
   const runningSpritesRef = useRef(0);
 
-  // Reset drag/drop state when switching sprites
   useEffect(() => {
     setDraggedBlockUid(null);
     setDragOverIndex(null);
     setDragOverChildIdx(null);
   }, [activeSprite]);
 
-  // Recursively update a child block's value
   const updateChildBlock = (parentUid, childIdx, index, newValue) => {
     setSpriteBlocks((prev) => ({
       ...prev,
@@ -358,16 +348,14 @@ export default function MidArea({
     }));
   };
 
-  // --- MAIN ANIMATION LOGIC (flat list, only Repeat has children) ---
   const animateSprite = async (spriteKey, token) => {
-    const moveStep = 1; // Always 1px for robust collision
+    const moveStep = 1; 
     const moveDelay = 20;
     const turnStep = 5;
     const turnDelay = 30;
 
     let { x, y, angle } = sprites[spriteKey];
 
-    // Get blocks from either stored state or spriteBlocks
     let blocks = [];
     let i = 0;
     
@@ -383,12 +371,10 @@ export default function MidArea({
       if (stopRef.current) return;
       if (runTokenRef.current[spriteKey] !== token) return;
 
-      // Store current execution state
       executionStateRef.current[spriteKey] = { blockIndex: i, blocks };
 
       const block = blocks[i];
 
-      // --- HERO FEATURE: COLLISION SWAP ---
       if (heroSwapEnabled) {
         for (const otherKey of Object.keys(sprites)) {
           if (otherKey !== spriteKey) {
@@ -404,10 +390,8 @@ export default function MidArea({
                 swappedRef.current[pairKey] = false;
               }, 1000);
 
-              // --- HERO FEATURE: SWAP EXECUTION STATES ---
               console.log(`Collision between ${spriteKey} and ${otherKey}!`);
               
-              // Store current execution state for both sprites
               const stateSnapshotA = createExecutionStateSnapshot(
                 blocks,
                 i,
@@ -423,10 +407,8 @@ export default function MidArea({
                 [otherKey]
               );
 
-              // Update UI by swapping blocks in spriteBlocks
               setSpriteBlocks(prev => {
                 const updatedBlocks = { ...prev };
-                // Make deep copies to avoid reference issues
                 const blocksA = JSON.parse(JSON.stringify(prev[spriteKey] || []));
                 const blocksB = JSON.parse(JSON.stringify(prev[otherKey] || []));
                 
@@ -436,7 +418,6 @@ export default function MidArea({
                 return updatedBlocks;
               });
 
-              // --- SWAP POSITIONS AND ANGLES ---
               setSprites(prev => {
                 const updated = { ...prev };
                 const temp = updated[spriteKey];
@@ -445,21 +426,17 @@ export default function MidArea({
                 return updated;
               });
               
-              // Store execution states for both sprites
               executionStateRef.current[spriteKey] = stateSnapshotB;
               executionStateRef.current[otherKey] = stateSnapshotA;
               
-              // Update run tokens to restart animations with new blocks
               runTokenRef.current[spriteKey] = (runTokenRef.current[spriteKey] || 0) + 1;
               runTokenRef.current[otherKey] = (runTokenRef.current[otherKey] || 0) + 1;
 
-              // Dispatch the collision event for notification
               const collisionEvent = new CustomEvent('spriteCollision', {
                 detail: { spriteA: spriteKey, spriteB: otherKey }
               });
               window.dispatchEvent(collisionEvent);
 
-              // Restart both runners and exit this one
               animateSprite(spriteKey, runTokenRef.current[spriteKey]);
               animateSprite(otherKey, runTokenRef.current[otherKey]);
               return;
@@ -468,13 +445,11 @@ export default function MidArea({
         }
       }
 
-      // --- REPEAT LOGIC ---
       if (block.content[0] === "Repeat ") {
         const times = block.content[1];
         for (let rep = 0; rep < times; rep++) {
           for (let j = 0; j < (block.children || []).length; j++) {
             const child = block.children[j];
-            // Recursively run child blocks (only Repeat has children)
             await runBlock(child);
             if (stopRef.current) return;
           }
@@ -483,7 +458,6 @@ export default function MidArea({
         continue;
       }
 
-      // --- MOVE ---
       if (block.content[0] === "Move ") {
         let total = block.content[1];
         let steps = Math.abs(total);
@@ -491,7 +465,6 @@ export default function MidArea({
         for (let s = 0; s < steps; s++) {
           if (stopRef.current) return;
           if (runTokenRef.current[spriteKey] !== token) return;
-          // Move 1 step at a time
           const rad = (angle * Math.PI) / 180;
           x = x + Math.cos(rad) * dir;
           y = y + Math.sin(rad) * dir;
@@ -503,7 +476,6 @@ export default function MidArea({
             [spriteKey]: { x, y, angle },
           }));
 
-          // --- HERO FEATURE: COLLISION SWAP (check after each mini-step) ---
           if (heroSwapEnabled) {
             for (const otherKey of Object.keys(sprites)) {
               if (otherKey !== spriteKey) {
@@ -519,10 +491,8 @@ export default function MidArea({
                     swappedRef.current[pairKey] = false;
                   }, 1000);
 
-                  // --- HERO FEATURE: SWAP EXECUTION STATES ---
                   console.log(`Collision between ${spriteKey} and ${otherKey}!`);
 
-                  // Store current execution state for both sprites
                   const stateSnapshotA = createExecutionStateSnapshot(
                     blocks,
                     i,
@@ -538,10 +508,8 @@ export default function MidArea({
                     [otherKey]
                   );
 
-                  // Update UI by swapping blocks in spriteBlocks
                   setSpriteBlocks(prev => {
                     const updatedBlocks = { ...prev };
-                    // Make deep copies to avoid reference issues
                     const blocksA = JSON.parse(JSON.stringify(prev[spriteKey] || []));
                     const blocksB = JSON.parse(JSON.stringify(prev[otherKey] || []));
                     
@@ -551,7 +519,6 @@ export default function MidArea({
                     return updatedBlocks;
                   });
 
-                  // --- SWAP POSITIONS AND ANGLES ---
                   setSprites(prev => {
                     const updated = { ...prev };
                     const temp = updated[spriteKey];
@@ -560,21 +527,17 @@ export default function MidArea({
                     return updated;
                   });
                   
-                  // Store execution states for both sprites
                   executionStateRef.current[spriteKey] = stateSnapshotB;
                   executionStateRef.current[otherKey] = stateSnapshotA;
                   
-                  // Update run tokens to restart animations with new blocks
                   runTokenRef.current[spriteKey] = (runTokenRef.current[spriteKey] || 0) + 1;
                   runTokenRef.current[otherKey] = (runTokenRef.current[otherKey] || 0) + 1;
 
-                  // Dispatch the collision event for notification
                   const collisionEvent = new CustomEvent('spriteCollision', {
                     detail: { spriteA: spriteKey, spriteB: otherKey }
                   });
                   window.dispatchEvent(collisionEvent);
 
-                  // Restart both runners and exit this one
                   animateSprite(spriteKey, runTokenRef.current[spriteKey]);
                   animateSprite(otherKey, runTokenRef.current[otherKey]);
                   return;
@@ -651,18 +614,15 @@ export default function MidArea({
       setIsRunning(false);
     }
 
-    // Helper to run a block (for repeat children)
     async function runBlock(block, nestLevel = 0, repeatIndex = 0) {
-      // Store execution state for nested blocks
+
       if (nestLevel > 0) {
         if (!executionStateRef.current[spriteKey].nested) {
           executionStateRef.current[spriteKey].nested = {};
         }
         
-        // Create a path based on nesting level and repeat index
         const nestedPath = `${nestLevel}-${repeatIndex}`;
         
-        // Initialize or get existing nested state
         if (!executionStateRef.current[spriteKey].nested[nestedPath]) {
           executionStateRef.current[spriteKey].nested[nestedPath] = {
             repeatCounter: 0,
@@ -675,11 +635,9 @@ export default function MidArea({
         if (block.content[0] === "Repeat ") {
           const times = block.content[1];
           
-          // Start from the stored repeat counter
           for (let rep = nestedState.repeatCounter; rep < times; rep++) {
             nestedState.repeatCounter = rep;
             
-            // Start from the stored child index
             for (let j = nestedState.childIndex; j < (block.children || []).length; j++) {
               nestedState.childIndex = j;
               await runBlock(block.children[j], nestLevel + 1, j);
@@ -687,11 +645,9 @@ export default function MidArea({
               if (runTokenRef.current[spriteKey] !== token) return;
             }
             
-            // Reset child index for next repeat
             nestedState.childIndex = 0;
           }
           
-          // Reset counter after completion
           nestedState.repeatCounter = 0;
           return;
         }
@@ -707,7 +663,6 @@ export default function MidArea({
         return;
       }
       
-      // --- MOVE ---
       if (block.content[0] === "Move ") {
         let total = block.content[1];
         let steps = Math.abs(total);
@@ -715,7 +670,7 @@ export default function MidArea({
         for (let s = 0; s < steps; s++) {
           if (stopRef.current) return;
           if (runTokenRef.current[spriteKey] !== token) return;
-          // Move 1 step at a time
+
           const rad = (angle * Math.PI) / 180;
           x = x + Math.cos(rad) * dir;
           y = y + Math.sin(rad) * dir;
@@ -727,7 +682,6 @@ export default function MidArea({
             [spriteKey]: { x, y, angle },
           }));
 
-          // --- HERO FEATURE: COLLISION SWAP (check after each mini-step) ---
           if (heroSwapEnabled) {
             for (const otherKey of Object.keys(sprites)) {
               if (otherKey !== spriteKey) {
@@ -743,10 +697,8 @@ export default function MidArea({
                     swappedRef.current[pairKey] = false;
                   }, 1000);
 
-                  // --- HERO FEATURE: SWAP EXECUTION STATES ---
                   console.log(`Collision between ${spriteKey} and ${otherKey}!`);
 
-                  // Store current execution state for both sprites
                   const stateSnapshotA = createExecutionStateSnapshot(
                     blocks,
                     i,
@@ -762,10 +714,8 @@ export default function MidArea({
                     [otherKey]
                   );
 
-                  // Update UI by swapping blocks in spriteBlocks
                   setSpriteBlocks(prev => {
                     const updatedBlocks = { ...prev };
-                    // Make deep copies to avoid reference issues
                     const blocksA = JSON.parse(JSON.stringify(prev[spriteKey] || []));
                     const blocksB = JSON.parse(JSON.stringify(prev[otherKey] || []));
                     
@@ -775,7 +725,6 @@ export default function MidArea({
                     return updatedBlocks;
                   });
 
-                  // --- SWAP POSITIONS AND ANGLES ---
                   setSprites(prev => {
                     const updated = { ...prev };
                     const temp = updated[spriteKey];
@@ -784,21 +733,17 @@ export default function MidArea({
                     return updated;
                   });
                   
-                  // Store execution states for both sprites
                   executionStateRef.current[spriteKey] = stateSnapshotB;
                   executionStateRef.current[otherKey] = stateSnapshotA;
                   
-                  // Update run tokens to restart animations with new blocks
                   runTokenRef.current[spriteKey] = (runTokenRef.current[spriteKey] || 0) + 1;
                   runTokenRef.current[otherKey] = (runTokenRef.current[otherKey] || 0) + 1;
 
-                  // Dispatch the collision event for notification
                   const collisionEvent = new CustomEvent('spriteCollision', {
                     detail: { spriteA: spriteKey, spriteB: otherKey }
                   });
                   window.dispatchEvent(collisionEvent);
 
-                  // Restart both runners and exit this one
                   animateSprite(spriteKey, runTokenRef.current[spriteKey]);
                   animateSprite(otherKey, runTokenRef.current[otherKey]);
                   return;
@@ -868,7 +813,6 @@ export default function MidArea({
     stopRef.current = false;
     setIsRunning(true);
 
-    // Reset execution states when starting fresh
     if (!isRunning) {
       executionStateRef.current = {};
     }
@@ -877,7 +821,6 @@ export default function MidArea({
     runningSpritesRef.current = keys.length;
 
     keys.forEach(spriteKey => {
-      // Initialize execution state for this sprite if not already set
       if (!executionStateRef.current[spriteKey]) {
         executionStateRef.current[spriteKey] = {
           blockIndex: 0,
@@ -894,7 +837,6 @@ export default function MidArea({
     stopRef.current = true;
     setIsRunning(false);
 
-    // Clear execution states for all sprites
     executionStateRef.current = {};
   };
 
@@ -937,7 +879,6 @@ export default function MidArea({
       }}
       onDragOver={spriteKeys.length === 0 ? undefined : (e) => e.preventDefault()}
     >
-      {/* Tabs and Run/Stop Buttons */}
       <div className="flex space-x-2 mb-4">
         {Object.keys(sprites).map((key) => (
           <button
@@ -966,7 +907,6 @@ export default function MidArea({
         </button>
       </div>
 
-      {/* Workspace blocks UI */}
       {activeSprite && (spriteBlocks[activeSprite] || []).length === 0 && (
         <p className="text-gray-500 italic">Drag blocks for {activeSprite}</p>
       )}
@@ -1047,17 +987,14 @@ export default function MidArea({
   );
 }
 
-// --- CIRCLE COLLISION FUNCTION ---
 function isColliding(spriteA, spriteB, keyA, keyB) {
   const sizeA = spriteSizes[keyA] || { width: 50, height: 50 };
   const sizeB = spriteSizes[keyB] || { width: 50, height: 50 };
 
-  // Assume x, y are the CENTER of the sprite
   const dx = spriteA.x - spriteB.x;
   const dy = spriteA.y - spriteB.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
 
-  // Use average of width/height as "radius"
   const radiusA = (sizeA.width + sizeA.height) / 4;
   const radiusB = (sizeB.width + sizeB.height) / 4;
 
@@ -1071,15 +1008,13 @@ function createExecutionStateSnapshot(blocks, currentIndex = 0, path = []) {
     nestedState: {}
   };
   
-  // If we're in a Repeat block, capture the nested state
   if (currentIndex < blocks.length && blocks[currentIndex]?.content?.[0] === "Repeat ") {
     const repeatBlock = blocks[currentIndex];
     if (repeatBlock.children && repeatBlock.children.length > 0) {
       snapshot.nestedState = {
-        repeatCounter: 0, // Current repeat iteration
-        childIndex: 0,    // Current child block index
+        repeatCounter: 0, 
+        childIndex: 0,   
         childStates: repeatBlock.children.map((child, idx) => {
-          // Recursively capture state for nested repeats
           if (child.content?.[0] === "Repeat ") {
             return createExecutionStateSnapshot([child], 0, [...path, currentIndex, idx]);
           }

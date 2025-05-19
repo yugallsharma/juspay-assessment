@@ -1,6 +1,7 @@
 import React from "react";
 
-export default function DogSprite({ x = 0, y = 0, angle = 0 }) {
+export default function DogSprite(props) {
+  const { x = 0, y = 0, angle = 0 } = props;
   return (
     <div
       style={{

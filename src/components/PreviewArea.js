@@ -62,10 +62,9 @@ export default function PreviewArea({
   const onSpriteSelect = (e) => {
     const key = e.target.value;
     if (key && !sprites[key]) {
-      // Find the first unused default position
       const used = Object.values(sprites).map((s) => `${s.x},${s.y}`);
       const pos =
-        defaultPositions.find((p) => !used.includes(`${p.x},${p.y}`)) || // fallback to center if all used
+        defaultPositions.find((p) => !used.includes(`${p.x},${p.y}`)) || 
         { x: 200, y: 200 };
       setSprites((prev) => ({
         ...prev,
@@ -121,7 +120,6 @@ export default function PreviewArea({
     };
   }, []);
 
-  // Remove sprite handler
   const removeActiveSprite = () => {
     if (!activeSprite) return;
     setSprites((prev) => {
@@ -138,7 +136,6 @@ export default function PreviewArea({
     setActiveSprite(null);
   };
 
-  // --- Collision notification state and effect ---
   const [collisionMsg, setCollisionMsg] = useState("");
   useEffect(() => {
     function handleCollision(e) {
@@ -150,7 +147,6 @@ export default function PreviewArea({
     return () => window.removeEventListener("spriteCollision", handleCollision);
   }, []);
 
-  // Draw grid lines
   const gridLines = [];
   for (let i = 1; i < containerSize / gridSize; i++) {
     gridLines.push(
@@ -199,7 +195,6 @@ export default function PreviewArea({
             <option value="frog">🐸 Frog</option>
             <option value="tortoise">🐢 Tortoise</option>
           </select>
-          {/* Custom dropdown arrow */}
           <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
             <svg
               className="w-4 h-4 text-gray-400"
@@ -245,9 +240,7 @@ export default function PreviewArea({
           overflow: "hidden",
         }}
       >
-        {/* Grid */}
         {gridLines}
-        {/* Sprites */}
         {Object.entries(sprites).map(([key, pos]) => {
           const SpriteComponent = spriteMap[key];
           return (
@@ -280,12 +273,11 @@ export default function PreviewArea({
               )}
               {pos.think && (
                 <div className="absolute left-1/2 -translate-x-1/2 -top-14 flex flex-col items-center pointer-events-none select-none z-10">
-                  {/* Main thought bubble */}
+
                   <div className="relative bg-white border-2 border-gray-300 rounded-full px-4 py-2 text-gray-700 text-xs italic shadow-lg min-w-[60px] flex items-center justify-center">
                     <span>{pos.think}</span>
                     <span className="ml-1">...</span>
                   </div>
-                  {/* Dots for thought trail */}
                   <div className="flex flex-col items-center mt-[-2px]">
                     <span className="w-3 h-3 bg-white border-2 border-gray-300 rounded-full block mb-1"></span>
                     <span className="w-2 h-2 bg-white border-2 border-gray-300 rounded-full block mb-1"></span>

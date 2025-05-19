@@ -1,7 +1,7 @@
 import React from "react";
 
-
-export default function CatSprite({ x = 0, y = 0, angle = 0 }) {
+export default function CatSprite(props) {
+  const { x = 0, y = 0, angle = 0 } = props;
   return (
     <div
       style={{
