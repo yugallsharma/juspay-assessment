@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import CatSprite from "./CatSprite";
 import DogSprite from "./DogSprite";
 import FrogSprite from "./FrogSprite";
@@ -137,6 +137,18 @@ export default function PreviewArea({
       });
     setActiveSprite(null);
   };
+
+  // --- Collision notification state and effect ---
+  const [collisionMsg, setCollisionMsg] = useState("");
+  useEffect(() => {
+    function handleCollision(e) {
+      const { spriteA, spriteB } = e.detail;
+      setCollisionMsg(`Collision! ${spriteA} and ${spriteB} swapped their blocks.`);
+      setTimeout(() => setCollisionMsg(""), 2000);
+    }
+    window.addEventListener("spriteCollision", handleCollision);
+    return () => window.removeEventListener("spriteCollision", handleCollision);
+  }, []);
 
   // Draw grid lines
   const gridLines = [];
@@ -284,6 +296,25 @@ export default function PreviewArea({
             </div>
           );
         })}
+        {collisionMsg && (
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              left: "50%",
+              transform: "translateX(-50%)",
+              background: "#fbbf24",
+              color: "#222",
+              padding: "8px 20px",
+              borderRadius: 8,
+              fontWeight: "bold",
+              boxShadow: "0 2px 8px #0002",
+              zIndex: 100,
+            }}
+          >
+            {collisionMsg}
+          </div>
+        )}
       </div>
     </div>
   );
